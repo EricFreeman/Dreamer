@@ -9,19 +9,25 @@ namespace Assets.Resources.Scripts.Player
     {
         public float MaxMovementSpeed;
         public float MaxGravity;
+        public float JumpForce;
 
-        public Rigidbody2D RigidBody;
+        private Rigidbody2D _rigidbody2D;
 
         void Start()
         {
-            RigidBody = GetComponent<Rigidbody2D>();
+            _rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
         void Update()
         {
             var horizontalMovement = Input.GetAxisRaw("Horizontal") * MaxMovementSpeed;
 
-            RigidBody.velocity = new Vector2(horizontalMovement, RigidBody.velocity.y.Clamp(-MaxGravity, MaxGravity));
+            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+            {
+                Jump();
+            }
+
+            _rigidbody2D.velocity = new Vector2(horizontalMovement, _rigidbody2D.velocity.y.Clamp(-MaxGravity, MaxGravity));
         }
 
         private bool IsGrounded()
@@ -40,6 +46,13 @@ namespace Assets.Resources.Scripts.Player
                 Physics2D.Raycast(transform.position - new Vector3(.12f, .18f), -Vector2.up, .05f)
             };
             return hits.Where(x => x.collider != null && x.collider.tag != "Player");
+        }
+
+        private void Jump()
+        {
+            transform.SetParent(null);
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, JumpForce);
+            _rigidbody2D.gravityScale = 1;
         }
     }
 }
