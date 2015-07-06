@@ -18,7 +18,7 @@ namespace Assets.Resources.Scripts.Player
             _rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-        void Update()
+        void FixedUpdate()
         {
             var horizontalMovement = Input.GetAxisRaw("Horizontal") * MaxMovementSpeed;
 
@@ -41,10 +41,11 @@ namespace Assets.Resources.Scripts.Player
             // This will account for being slightly over a ledge or something.
             RaycastHit2D[] hits =
             {
-                Physics2D.Raycast(transform.position - new Vector3(-.12f, .18f), -Vector2.up, .05f),
-                Physics2D.Raycast(transform.position - new Vector3(0, .18f), -Vector2.up, .05f),
-                Physics2D.Raycast(transform.position - new Vector3(.12f, .18f), -Vector2.up, .05f)
+                Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .05f)
             };
+            hits.Where(x => x.collider != null).ToList().ForEach(x => Debug.Log(x.collider.name));
             return hits.Where(x => x.collider != null && x.collider.tag != "Player");
         }
 
