@@ -45,7 +45,7 @@ namespace Assets.Resources.Scripts.Player
                 Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, .05f),
                 Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .05f)
             };
-            hits.Where(x => x.collider != null).ToList().ForEach(x => Debug.Log(x.collider.name));
+
             return hits.Where(x => x.collider != null && x.collider.tag != "Player");
         }
 
