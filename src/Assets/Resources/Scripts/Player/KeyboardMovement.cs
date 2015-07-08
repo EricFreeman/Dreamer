@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using Assets.Resources.Scripts.Extensions;
 using UnityEngine;
@@ -11,6 +11,8 @@ namespace Assets.Resources.Scripts.Player
         public float MaxGravity;
         public float JumpForce;
 
+        private bool _hasDoubleJumped;
+        private float _currentJumpForce;
         private Rigidbody2D _rigidbody2D;
 
         void Start()
@@ -21,10 +23,35 @@ namespace Assets.Resources.Scripts.Player
         void FixedUpdate()
         {
             var horizontalMovement = Input.GetAxisRaw("Horizontal") * MaxMovementSpeed;
-
-            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+            if(Math.Abs(_currentJumpForce) > .1f)
             {
-                Jump();
+                horizontalMovement = _currentJumpForce;
+                _currentJumpForce = _currentJumpForce.MoveTowards(0, .3f);
+            }
+
+            var cachedIsGrounded = IsGrounded();
+
+            if (cachedIsGrounded)
+            {
+                _hasDoubleJumped = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (GetRightHits())
+                {
+                    Jump(-JumpForce * .25f);
+                }
+
+                if (GetLeftHits())
+                {
+                    Jump(JumpForce * .25f);
+                }
+
+                if (cachedIsGrounded)
+                {
+                    Jump();
+                }
             }
 
             _rigidbody2D.velocity = new Vector2(horizontalMovement, _rigidbody2D.velocity.y.Clamp(-MaxGravity, MaxGravity));
@@ -32,13 +59,6 @@ namespace Assets.Resources.Scripts.Player
 
         private bool IsGrounded()
         {
-            return GetRaycastHits().Any();
-        }
-
-        private IEnumerable<RaycastHit2D> GetRaycastHits()
-        {
-            // Check if right side of player or left side of player is touching.
-            // This will account for being slightly over a ledge or something.
             RaycastHit2D[] hits =
             {
                 Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, .05f),
@@ -46,13 +66,38 @@ namespace Assets.Resources.Scripts.Player
                 Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .05f)
             };
 
-            return hits.Where(x => x.collider != null && x.collider.tag != "Player");
+            return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
         }
 
-        private void Jump()
+        private bool GetLeftHits()
         {
+            RaycastHit2D[] hits =
+            {
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, 0), Vector2.left, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, .05f)
+            };
+
+            return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
+        }
+
+        private bool GetRightHits()
+        {
+            RaycastHit2D[] hits =
+            {
+                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(.4f, 0), Vector2.right, .05f),
+                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, .05f)
+            };
+
+            return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
+        }
+
+        private void Jump(float? horizontal = null)
+        {
+            _currentJumpForce = horizontal ?? 0;
             transform.SetParent(null);
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, JumpForce);
+            _rigidbody2D.velocity = new Vector2(horizontal ?? _rigidbody2D.velocity.x, JumpForce);
             _rigidbody2D.gravityScale = 1;
         }
     }
