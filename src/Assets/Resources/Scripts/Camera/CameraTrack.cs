@@ -15,7 +15,23 @@ namespace Assets.Resources.Scripts.Camera
 
         void Update()
         {
-            transform.position = GameObject.transform.position + Offset;
+            if (GameObject.transform.position.x + Leeway < transform.position.x)
+            {
+                transform.position = new Vector3(GameObject.transform.position.x + Leeway, transform.position.y) + Offset;
+            }
+            else if (GameObject.transform.position.x - Leeway > transform.position.x)
+            {
+                transform.position = new Vector3(GameObject.transform.position.x - Leeway, transform.position.y) + Offset;
+            }
+
+            if (GameObject.transform.position.y + Leeway < transform.position.y)
+            {
+                transform.position = new Vector3(transform.position.x, GameObject.transform.position.y + Leeway) + Offset;
+            }
+            else if (GameObject.transform.position.y - Leeway > transform.position.y)
+            {
+                transform.position = new Vector3(transform.position.x, GameObject.transform.position.y - Leeway) + Offset;
+            }
         }
     }
 }
