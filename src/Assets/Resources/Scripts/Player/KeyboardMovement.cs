@@ -25,7 +25,7 @@ namespace Assets.Resources.Scripts.Player
             var horizontalMovement = Input.GetAxisRaw("Horizontal") * MaxMovementSpeed;
             if(Math.Abs(_currentJumpForce) > .1f)
             {
-                horizontalMovement = _currentJumpForce;
+                horizontalMovement += _currentJumpForce;
                 _currentJumpForce = _currentJumpForce.MoveTowards(0, .3f);
             }
 
