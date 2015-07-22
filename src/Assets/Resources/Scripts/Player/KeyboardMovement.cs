@@ -61,9 +61,9 @@ namespace Assets.Resources.Scripts.Player
         {
             RaycastHit2D[] hits =
             {
-                Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .05f)
+                Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, .1f),
+                Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, .1f),
+                Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .1f)
             };
 
             return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
