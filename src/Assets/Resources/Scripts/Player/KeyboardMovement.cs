@@ -15,6 +15,8 @@ namespace Assets.Resources.Scripts.Player
         private float _currentJumpForce;
         private Rigidbody2D _rigidbody2D;
 
+        public float JumpDistance;
+
         void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -61,9 +63,9 @@ namespace Assets.Resources.Scripts.Player
         {
             RaycastHit2D[] hits =
             {
-                Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, .1f),
-                Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, .1f),
-                Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, .1f)
+                Physics2D.Raycast(transform.position + new Vector3(-.12f, -.4f), -Vector2.up, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(0, .4f), -Vector2.up, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(.12f, -.4f), -Vector2.up, JumpDistance)
             };
 
             return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
@@ -73,9 +75,9 @@ namespace Assets.Resources.Scripts.Player
         {
             RaycastHit2D[] hits =
             {
-                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(-.4f, 0), Vector2.left, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, .05f)
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, 0), Vector2.left, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(-.4f, -.12f), Vector2.left, JumpDistance)
             };
 
             return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
@@ -85,9 +87,9 @@ namespace Assets.Resources.Scripts.Player
         {
             RaycastHit2D[] hits =
             {
-                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(.4f, 0), Vector2.right, .05f),
-                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, .05f)
+                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(.4f, 0), Vector2.right, JumpDistance),
+                Physics2D.Raycast(transform.position + new Vector3(.4f, -.12f), Vector2.right, JumpDistance)
             };
 
             return hits.Where(x => x.collider != null && x.collider.tag != "Player").Any();
