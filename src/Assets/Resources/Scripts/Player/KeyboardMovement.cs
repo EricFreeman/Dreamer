@@ -11,11 +11,16 @@ namespace Assets.Resources.Scripts.Player
         public float MaxGravity;
         public float JumpForce;
 
+        public GameObject DustParticle;
+
         private bool _hasDoubleJumped;
         private float _currentJumpForce;
         private Rigidbody2D _rigidbody2D;
 
         public float JumpDistance;
+
+        public float DustSpawnDelay;
+        private float _timeSinceLastDustSpawn;
 
         void Start()
         {
@@ -57,6 +62,13 @@ namespace Assets.Resources.Scripts.Player
             }
 
             _rigidbody2D.velocity = new Vector2(horizontalMovement, _rigidbody2D.velocity.y.Clamp(-MaxGravity, MaxGravity));
+
+            _timeSinceLastDustSpawn += Time.deltaTime;
+            if (cachedIsGrounded && _timeSinceLastDustSpawn > DustSpawnDelay && Math.Abs(horizontalMovement) > 0)
+            {
+                _timeSinceLastDustSpawn = 0;
+                SpawnDust();
+            }
         }
 
         private bool IsGrounded()
@@ -101,6 +113,12 @@ namespace Assets.Resources.Scripts.Player
             transform.SetParent(null);
             _rigidbody2D.velocity = new Vector2(horizontal ?? _rigidbody2D.velocity.x, JumpForce);
             _rigidbody2D.gravityScale = 1;
+        }
+
+        private void SpawnDust()
+        {
+            var dust = Instantiate(DustParticle);
+            dust.transform.position = transform.position;
         }
     }
 }
